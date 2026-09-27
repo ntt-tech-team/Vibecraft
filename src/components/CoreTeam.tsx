@@ -38,8 +38,10 @@ const TEAM: Role[] = [
 const INTERVAL_MS = 4500
 const SWIPE_PX = 40
 
-const photoSrc = (slug: string) => `/team/${slug}.jpg`
-const thumbSrc = (slug: string) => `/team/thumbs/${slug}.jpg`
+// bump when photos are replaced under the same file names, so browsers don't keep the cached old ones
+const PHOTO_VERSION = 2 // 2 = B/W portraits
+const photoSrc = (slug: string) => `/team/${slug}.jpg?v=${PHOTO_VERSION}`
+const thumbSrc = (slug: string) => `/team/thumbs/${slug}.jpg?v=${PHOTO_VERSION}`
 
 type Dir = 'next' | 'prev'
 
