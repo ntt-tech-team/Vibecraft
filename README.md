@@ -168,4 +168,4 @@ Go to `/admin` and sign in with the organiser account. From there you can set a 
 
 **Neuro Tech Titans (NTT)** · SRMIST Tiruchirappalli · YUVA'26
 
-Presented alongside SRM Institute of Science & Technology, Tiruchirappalli, Launchpad 2026, and the Institution's Innovation Council.
+Presented alongside SRM Institute of Science & Technology, Tiruchirappalli, Neuro Tech Titans, and the Institution's Innovation Council.

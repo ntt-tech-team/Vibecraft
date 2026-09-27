@@ -1,7 +1,7 @@
 const PARTNERS = [
   'SRM Institute of Science & Technology, Tiruchirappalli',
   "YUVA'26",
-  'Launchpad 2026',
+  'Neuro Tech Titans',
   "Institution's Innovation Council",
 ]
 
