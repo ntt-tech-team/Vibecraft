@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import { supabase } from '../lib/supabase'
+import { trialPhase, type TrialPhase } from '../tasks/round1/api'
 import { card, input, Btn } from './ui'
 
 // Organiser controls for Round 1's Technical Task ("The Trial"), the team registration switch,
@@ -25,6 +26,7 @@ interface Overview {
     registration_open: boolean
     r1_opened_at: string | null
     r1_open_until: string | null
+    r1_closed_early?: boolean // missing until supabase/round1_v2.sql has been run
   }
   teams: Team[]
 }
@@ -82,7 +84,7 @@ export default function Round1Admin() {
     if (!supabase) return
     const { error } = await supabase.rpc(fn, args)
     if (error) {
-      setErr(error.message)
+      setErr(/admin_r1_reset/.test(error.message) ? 'Run supabase/round1_v2.sql in the Supabase SQL editor first.' : error.message)
       return
     }
     setNote(done)
@@ -101,7 +103,9 @@ export default function Round1Admin() {
   const cfg = data.config
   const serverNow = now + offset
   const until = cfg.r1_open_until ? Date.parse(cfg.r1_open_until) : 0
-  const open = until > serverNow
+  const phase = trialPhase(cfg.r1_opened_at, cfg.r1_open_until, cfg.r1_closed_early, serverNow)
+  const open = phase === 'open'
+  const ended = cfg.r1_open_until ? new Date(cfg.r1_open_until).toLocaleTimeString('en-US', IST) : ''
   const finished = data.teams.filter((t) => t.clears.some((c) => c.stage === 3))
   const stageCount = (n: number) => data.teams.filter((t) => t.clears.some((c) => c.stage === n)).length
 
@@ -146,16 +150,38 @@ export default function Round1Admin() {
     <div style={{ ...card, maxWidth: 760, marginTop: 24 }}>
       <h2 style={h2}>Round 1 · The Trial</h2>
 
-      <div style={{ ...statusBox, borderColor: open ? '#6FA043' : '#1B140C' }}>
-        {open ? (
-          <>
-            <span style={{ fontWeight: 700 }}>🟢 Games open</span>
-            <span style={{ fontFamily: 'ui-monospace, Consolas, monospace', fontSize: 28, fontWeight: 800, color: '#6FA043' }}>
-              {clock(until - serverNow)}
-            </span>
-          </>
-        ) : (
-          <span style={{ fontWeight: 700 }}>🔒 Games closed{cfg.r1_opened_at ? ' (the last window has ended)' : ''}</span>
+      <div style={{ ...statusBox, borderColor: open ? '#6FA043' : phase === 'waiting' ? '#1B140C' : '#FF9130' }}>
+        <span>
+          <span style={{ fontWeight: 700 }}>
+            {phase === 'open'
+              ? '🟢 Games open'
+              : phase === 'waiting'
+                ? '⚪ Not started'
+                : phase === 'timeup'
+                  ? `⏰ Ended: the timer ran out at ${ended}`
+                  : `🔒 Ended: you closed it at ${ended}`}
+          </span>
+          <span style={{ display: 'block', fontSize: 13, color: '#CFC6A9', marginTop: 2 }}>Players see: {PLAYERS_SEE[phase]}</span>
+        </span>
+        {open && (
+          <span style={{ fontFamily: 'ui-monospace, Consolas, monospace', fontSize: 28, fontWeight: 800, color: '#6FA043' }}>
+            {clock(until - serverNow)}
+          </span>
+        )}
+        {(phase === 'timeup' || phase === 'stopped') && (
+          <Btn
+            tone="ghost"
+            onClick={() => {
+              if (
+                window.confirm(
+                  'Reset The Trial to "Not started"? Players will see "Please wait for the organisers to begin" until you press Open games. Stage clears already saved are kept.',
+                )
+              )
+                void call('admin_r1_reset', {}, 'Reset: The Trial is "Not started" again.')
+            }}
+          >
+            ↺ Reset to Not started
+          </Btn>
         )}
       </div>
 
@@ -198,7 +224,8 @@ export default function Round1Admin() {
       </div>
       <p style={small}>
         Players' screens pick up changes within about 15–20 seconds. "Time taken" on the victory screen counts from when you
-        pressed Open. The +min buttons don't restart it.
+        pressed Open. The +min buttons don't restart it, and they reopen games that have ended. After a test run, press Reset so
+        players see the waiting screen instead of "Time's up".
       </p>
 
       <h3 style={h3}>Team registration</h3>
@@ -278,6 +305,13 @@ export default function Round1Admin() {
       {err && <p style={{ color: '#E33D2E', fontSize: 14, marginTop: 14 }}>⚠ {err}</p>}
     </div>
   )
+}
+
+const PLAYERS_SEE: Record<TrialPhase, string> = {
+  waiting: '"Please wait for the organisers to begin"',
+  open: 'the games and the countdown',
+  timeup: `"Time's up!"`,
+  stopped: '"The organisers have closed The Trial"',
 }
 
 const h2 = { fontFamily: '"Press Start 2P", monospace', fontSize: 16, margin: '0 0 12px' }

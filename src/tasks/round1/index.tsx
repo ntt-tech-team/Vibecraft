@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react'
 import { Link } from 'react-router-dom'
 import WorldBackground from '../../components/WorldBackground'
-import { post, readKey, writeKey, UNREACHABLE, type R1Status, type StageClear } from './api'
+import { post, readKey, writeKey, trialPhase, UNREACHABLE, type R1Status, type StageClear, type TrialPhase } from './api'
 import TeamGate from './TeamGate'
 import Assemble from './stages/Assemble'
 import Memory from './stages/Memory'
@@ -114,7 +114,6 @@ export default function Round1Task() {
   const [pending, setPending] = useState<Pending[]>([])
   const [pendingFor, setPendingFor] = useState<number | null>(null) // team whose pending list is loaded
   const [view, setView] = useState<{ stage: StageNo; mode: 'play' | 'done' } | null>(null)
-  const [sawOpen, setSawOpen] = useState(false)
 
   // Replies can arrive out of order (a poll sent just before a stage clear); keep the newest.
   const newest = useRef(0)
@@ -164,12 +163,9 @@ export default function Round1Task() {
   const serverNow = now + offset
   const openUntil = status?.open_until ? Date.parse(status.open_until) : 0
   const openedAt = status?.opened_at ? Date.parse(status.opened_at) : 0
-  const isOpen = openUntil > serverNow
+  const phase = trialPhase(status?.opened_at ?? null, status?.open_until ?? null, status?.closed_early, serverNow)
+  const isOpen = phase === 'open'
   const teamDone = serverCleared.has(3)
-
-  useEffect(() => {
-    if (isOpen) setSawOpen(true)
-  }, [isOpen])
 
   // ---- this laptop's unconfirmed clears (survive a refresh) ----
   useEffect(() => {
@@ -217,7 +213,7 @@ export default function Round1Task() {
       drop()
     } else if (res.reason === 'closed') {
       updatePending(() => [])
-      setFlushNote("⏰ Time ran out before your last stage clear reached the server, so it didn't count.")
+      setFlushNote("🔒 The Trial closed before your last stage clear reached the server, so it didn't count.")
       void refresh(key)
     } else if (res.reason === 'too_fast') {
       drop()
@@ -291,8 +287,8 @@ export default function Round1Task() {
       main = <Victory teamName={team.name} stage3={stage3} pending3={pending3} openedAt={openedAt} />
     } else if (view.mode === 'done' && cleared.has(view.stage)) {
       main = <StageDone stage={view.stage} next={current} onNext={(s) => setView({ stage: s, mode: 'play' })} />
-    } else if (!isOpen) {
-      main = <Closed timeUp={sawOpen || openedAt > 0} clearedCount={cleared.size} onCheck={() => void refresh(key)} />
+    } else if (phase !== 'open') {
+      main = <Closed phase={phase} clearedCount={cleared.size} onCheck={() => void refresh(key)} />
     } else {
       const stageNo = Math.min(view.stage, current ?? 3) as StageNo
       main = (
@@ -317,7 +313,7 @@ export default function Round1Task() {
         <div className="r1-status">
           <TeamBar name={team.name} teamKey={key} onLeave={leave} />
           <StageTrack cleared={cleared} current={current} />
-          <TimerBar isOpen={isOpen} leftMs={openUntil - serverNow} done={cleared.size === 3} />
+          <TimerBar phase={phase} leftMs={openUntil - serverNow} done={cleared.size === 3} />
         </div>
         {flushNote && cleared.size < 3 && (
           <p className="r1-notice" role="status">
@@ -390,8 +386,15 @@ function TeamBar({ name, teamKey, onLeave }: { name: string; teamKey: string; on
   )
 }
 
-function TimerBar({ isOpen, leftMs, done }: { isOpen: boolean; leftMs: number; done: boolean }) {
+const PHASE_LABEL: Record<Exclude<TrialPhase, 'open'>, string> = {
+  waiting: '🕒 Not started yet',
+  timeup: "⏰ Time's up",
+  stopped: '🔒 Closed',
+}
+
+function TimerBar({ phase, leftMs, done }: { phase: TrialPhase; leftMs: number; done: boolean }) {
   if (done) return null
+  const isOpen = phase === 'open'
   return (
     <div className={`r1-timer${isOpen && leftMs <= 60_000 ? ' is-low' : ''}${isOpen ? '' : ' is-closed'}`} role="timer">
       {isOpen ? (
@@ -400,7 +403,7 @@ function TimerBar({ isOpen, leftMs, done }: { isOpen: boolean; leftMs: number; d
           <span className="r1-timer-clock">{formatClock(leftMs)}</span>
         </>
       ) : (
-        <span className="r1-timer-label">🔒 Closed</span>
+        <span className="r1-timer-label">{PHASE_LABEL[phase]}</span>
       )}
     </div>
   )
@@ -529,29 +532,64 @@ function StageDone({ stage, next, onNext }: { stage: StageNo; next: StageNo | nu
   )
 }
 
-function Closed({ timeUp, clearedCount, onCheck }: { timeUp: boolean; clearedCount: number; onCheck: () => void }) {
+function Closed({
+  phase,
+  clearedCount,
+  onCheck,
+}: {
+  phase: Exclude<TrialPhase, 'open'>
+  clearedCount: number
+  onCheck: () => void
+}) {
+  const check = (
+    <button type="button" className="btn ghost r1-small-btn" onClick={onCheck}>
+      ↻ Check now
+    </button>
+  )
+  if (phase === 'waiting') {
+    return (
+      <div className="r1-card-panel r1-closed">
+        <p className="r1-done-big">⏳ Please wait for the organisers to begin</p>
+        <p className="r1-muted">
+          The Trial hasn't started yet. When the organisers start Round 1's Technical Task, the {WINDOW_MIN}-minute
+          timer begins and Stage 1 opens on this screen by itself. There's no need to refresh.
+        </p>
+        <p className="r1-label">Before it begins</p>
+        <ul className="r1-waitlist">
+          <li>Every teammate who's playing joins with your team key (Show team key, above).</li>
+          <li>Keep this page open on every laptop.</li>
+        </ul>
+        {clearedCount > 0 && <p className="r1-muted">Your team has cleared {clearedCount} of 3 stages so far.</p>}
+        <div className="r1-waitfoot">
+          <span className="r1-live">
+            <span className="r1-pulse" aria-hidden="true" />
+            Waiting for the start signal
+          </span>
+          {check}
+        </div>
+      </div>
+    )
+  }
   return (
     <div className="r1-card-panel r1-closed">
-      {timeUp ? (
+      {phase === 'timeup' ? (
         <>
           <p className="r1-done-big">⏰ Time's up!</p>
           <p className="r1-muted">
-            The Trial is closed. Your team cleared {clearedCount} of 3 stages. Thanks for playing!
+            The timer has run out and The Trial is now closed. Your team cleared {clearedCount} of 3 stages. Thanks for
+            playing!
           </p>
         </>
       ) : (
         <>
-          <p className="r1-done-big">🔒 The Trial hasn't opened yet</p>
+          <p className="r1-done-big">🔒 The organisers have closed The Trial</p>
           <p className="r1-muted">
-            It opens when the organisers start Round 1's Technical Task, and this page updates by itself. Make sure
-            everyone on your team has joined with the team key before then.
+            Your team's progress is saved: {clearedCount} of 3 stages cleared. Please wait for instructions from the
+            organisers. If they reopen The Trial, this page picks up where you left off by itself.
           </p>
-          {clearedCount > 0 && <p className="r1-muted">Your team has cleared {clearedCount} of 3 stages so far.</p>}
         </>
       )}
-      <button type="button" className="btn ghost r1-small-btn" onClick={onCheck}>
-        ↻ Check now
-      </button>
+      {check}
     </div>
   )
 }

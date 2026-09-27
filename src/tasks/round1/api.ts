@@ -13,8 +13,23 @@ export interface R1Status {
   registration_open: boolean
   opened_at: string | null
   open_until: string | null
+  closed_early?: boolean // missing until supabase/round1_v2.sql has been run
   team: { id: number; name: string } | null
   clears: StageClear[]
+}
+
+/** Never opened, running, the timer ran out, or the organisers pressed Close before it did. */
+export type TrialPhase = 'waiting' | 'open' | 'timeup' | 'stopped'
+
+export function trialPhase(
+  openedAt: string | null,
+  openUntil: string | null,
+  closedEarly: boolean | undefined,
+  serverNow: number,
+): TrialPhase {
+  if (!openedAt) return 'waiting'
+  if (openUntil && Date.parse(openUntil) > serverNow) return 'open'
+  return closedEarly ? 'stopped' : 'timeup'
 }
 
 export type Reply<T> = Partial<T> & { error?: string; ok?: boolean; reason?: string }
