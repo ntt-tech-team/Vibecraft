@@ -12,3 +12,6 @@ export const REGISTER_FORM_URL = 'https://forms.gle/v47byrcnZ6Htpj386' // ① he
 export const ROUND1_SUBMIT_URL = 'https://forms.gle/U7vuWsGCnpegAN4Z6' // ② Round 1 submission
 export const ROUND2_SUBMIT_URL = 'https://forms.gle/oMCE55CrKakjPmVV9' // ③ Round 2 project submission
 export const ROUND3_PPT_URL = 'https://forms.gle/gdmK2UYi2wKcfohM8' // ④ Round 3 PPT submission
+
+// ---- Dataset (the 10 class-section timetables, used in Round 1 and Round 2) ----
+export const DATASET_URL = 'https://drive.google.com/drive/folders/178oRX8akrUp6eqASCOQ5FafWfJi2RM4t'

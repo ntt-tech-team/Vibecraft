@@ -1,7 +1,8 @@
 import { Link, useParams } from 'react-router-dom'
 import WorldBackground, { type World } from '../components/WorldBackground'
 import Round2Gate from '../components/Round2Gate'
-import { REGISTER_FORM_URL, ROUND1_SUBMIT_URL, ROUND2_SUBMIT_URL, ROUND3_PPT_URL } from '../config'
+import Round1Book from '../components/questbook/Round1Book'
+import { REGISTER_FORM_URL, ROUND2_SUBMIT_URL, ROUND3_PPT_URL } from '../config'
 import NotFound from './NotFound'
 
 function FormCta({ url, label }: { url: string; label: string }) {
@@ -50,7 +51,7 @@ export default function RoundPage() {
       </header>
 
       <main className="round-main">
-        <div className="round-card">
+        <div className={round === 3 ? 'round-card' : 'round-card round-card--wide'}>
           <p className="round-eyebrow" style={{ color: eyebrowColor }}>
             {eyebrow}
           </p>
@@ -59,19 +60,11 @@ export default function RoundPage() {
             <>
               <h1>Round 1 — The Overworld</h1>
               <p>
-                Every team gets a problem statement and a fixed window to submit a working technical
-                solution. This round tests raw problem-solving — how fast and how well you can build
-                under pressure.
+                Build your solution in two phases. Phase 1 is open now. Phase 2 stays sealed until the
+                organisers reveal it, and you submit at the end of Phase 2. The Technical Task and the Fun
+                Task earn your team advantage points along the way.
               </p>
-              <p>
-                Every team plays every round. The Technical Task and the Fun Task earn your team
-                advantage points along the way.
-              </p>
-              <p className="hint">
-                The exact problem statement drops on the morning of the event — this page covers the
-                rules, not the puzzle.
-              </p>
-              <FormCta url={ROUND1_SUBMIT_URL} label="Submit Round 1" />
+              <Round1Book />
               <div className="round-phase">
                 <p className="round-eyebrow" style={{ color: 'var(--grass-light)', margin: '0 0 10px' }}>
                   TECHNICAL TASK · THE TRIAL

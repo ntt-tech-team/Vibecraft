@@ -5,6 +5,7 @@ import { mapTimerRow, toView, pad, type TimerState } from '../lib/timer'
 import { page, card, input, Btn } from './ui'
 import DragonAdmin from './DragonAdmin'
 import Round1Admin from './Round1Admin'
+import ProblemStatementsAdmin from './ProblemStatementsAdmin'
 
 const TIMER_ID = 1
 
@@ -277,6 +278,7 @@ export default function AdminPanel() {
           database rejects any write that isn't from this admin account.
         </p>
       </div>
+      <ProblemStatementsAdmin />
       <Round1Admin />
       <DragonAdmin />
     </div>

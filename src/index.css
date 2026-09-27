@@ -575,6 +575,12 @@ header.site{
   padding:clamp(28px,5vw,44px); box-shadow:8px 8px 0 rgba(0,0,0,0.5);
   backdrop-filter:blur(4px); -webkit-backdrop-filter:blur(4px);
 }
+.round-card--wide{max-width:1100px;}
+.round-card--wide > p{max-width:780px;}
+@media (max-width:760px){
+  .round-main:has(.round-card--wide){padding:28px 10px;}
+  .round-card--wide{padding:22px 12px;}
+}
 .round-eyebrow{font-family:'Press Start 2P',monospace; font-size:11px; letter-spacing:1px; margin:0 0 16px;}
 .round-card h1{font-size:clamp(22px,4vw,34px); margin:0 0 18px; color:var(--parchment); text-shadow:3px 3px 0 var(--ink);}
 .round-card p{color:var(--parchment-dim); font-size:16px; line-height:1.6; margin:0 0 14px;}
@@ -589,16 +595,13 @@ header.site{
 .round-back:hover{color:var(--torch-light);}
 
 /* ---------- round 2 gate + problem-statement list ---------- */
-.r2-gate{margin-top:6px;}
+.r2-gate{margin-top:6px; max-width:560px;}
 .r2-gate-label{display:block; font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; color:var(--parchment-dim); margin-bottom:8px;}
 .r2-gate-row{display:flex; gap:10px; flex-wrap:wrap; align-items:center;}
 .r2-input{flex:1; min-width:200px; padding:12px 14px; border:2px solid var(--ink); border-radius:3px; background:rgba(255,255,255,0.96); color:var(--ink); font-size:15px; letter-spacing:2px; font-family:'Rubik',monospace;}
 .r2-msg{margin-top:10px; font-size:14px; font-weight:700; min-height:20px; color:var(--grass-light);}
 .r2-msg.err{color:#ff9a8f;}
 .r2-unlocked .r2-note{color:var(--grass-light); font-weight:700; margin:0 0 16px;}
-.r2-problem{background:rgba(255,255,255,0.06); border:1px solid rgba(241,233,210,0.18); border-left:4px solid var(--torch); border-radius:4px; padding:18px 20px; margin-bottom:16px;}
-.r2-problem h2{font-size:clamp(16px,2.4vw,20px); margin:0 0 10px; color:var(--parchment); text-shadow:2px 2px 0 var(--ink);}
-.r2-problem p{margin:0; color:var(--parchment-dim); font-size:15px; line-height:1.6;}
 
 .gate{display:flex; flex-wrap:wrap; gap:12px; align-items:center; margin-top:6px;}
 .gate label{font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; width:100%;}
