@@ -295,7 +295,7 @@ export async function handleDragon(request: Request, env: DragonEnv): Promise<Re
           return json({ team, key: newKey })
         } catch (e) {
           const msg = (e as { message?: string }).message ?? ''
-          if (['bad_name', 'name_taken', 'team_limit'].includes(msg)) return json({ error: msg }, 409)
+          if (['bad_name', 'name_taken', 'team_limit', 'registration_closed'].includes(msg)) return json({ error: msg }, 409)
           throw e
         }
       }

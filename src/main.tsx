@@ -8,6 +8,7 @@ import './index.css'
 
 const RoundPage = lazyPage(() => import('./pages/RoundPage'))
 const DragonPage = lazyPage(() => import('./pages/DragonPage'))
+const Round1Task = lazyPage(() => import('./tasks/round1'))
 const NotFound = lazyPage(() => import('./pages/NotFound'))
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
@@ -21,6 +22,14 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
           element={
             <Suspense fallback={null}>
               <RoundPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/round/1/task"
+          element={
+            <Suspense fallback={null}>
+              <Round1Task />
             </Suspense>
           }
         />

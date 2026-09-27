@@ -9,8 +9,8 @@ export default function Rounds() {
         <div className="section-head">
           <h2>The Rounds</h2>
           <p>
-            Three rounds. Round 1 is open to everyone. What's past it only unlocks once you've cleared
-            it.
+            Three rounds, and every team plays all three. Each one unlocks on event day as the
+            clock moves.
           </p>
         </div>
         <RoundsDeck />

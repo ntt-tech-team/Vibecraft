@@ -57,7 +57,7 @@ export default function Round2Gate({ submitUrl }: { submitUrl: string }) {
       }
     } else {
       setStatus('error')
-      setMsg('Wrong code. Clear Round 1 first.')
+      setMsg('Wrong code. Check the code announced in the hall.')
       setShake(true)
       setTimeout(() => setShake(false), 400)
       try {
@@ -76,8 +76,8 @@ export default function Round2Gate({ submitUrl }: { submitUrl: string }) {
   if (!isSupabaseConfigured) {
     return (
       <div className="round-locked">
-        🔒 Round 2 unlocks on event day — you'll need the access code given to teams that clear
-        Round 1.
+        🔒 Round 2 unlocks on event day — you'll need the access code the organisers announce in
+        the hall.
       </div>
     )
   }
@@ -119,7 +119,7 @@ export default function Round2Gate({ submitUrl }: { submitUrl: string }) {
           id="gateInput"
           className="r2-input"
           autoComplete="off"
-          placeholder="Enter your Round 1 code"
+          placeholder="Enter the Round 2 access code"
           aria-describedby="gateMsg"
           onKeyDown={(e) => {
             if (e.key === 'Enter') void verify((e.target as HTMLInputElement).value)

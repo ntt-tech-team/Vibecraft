@@ -13,7 +13,7 @@ interface RoundCard {
 
 const ROUNDS: RoundCard[] = [
   { id: 1, title: 'ROUND 1', sub: 'Open to every registered team', world: 'overworld', href: '/round/1' },
-  { id: 2, title: 'ROUND 2', sub: 'Unlocks after Round 1 results', world: 'nether', href: '/round/2' },
+  { id: 2, title: 'ROUND 2', sub: 'Unlocks after Round 1', world: 'nether', href: '/round/2' },
   { id: 3, title: 'ROUND 3', sub: 'The grand finale', world: 'end', href: '/round/3' },
 ]
 const N = ROUNDS.length

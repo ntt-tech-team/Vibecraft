@@ -19,7 +19,7 @@ Minecraft-inspired, built with React + Three.js, with an organiser-controlled li
 | **Prize pool** | ₹10,000 + credits, goodies, and partner-backed certificates |
 | **Register** | [CampusQuest](https://campusquest.incuman.com/events/detail/ddc130a5-ef6e-4b00-9e32-41fb7d7ee4af) (registration is CampusQuest only; Unstop is for event info) |
 
-**Format.** Three rounds. Round 1 is an elimination round open to every registered team. Round 2 and the Finale are revealed only to teams that clear Round 1. AI tools are fully allowed — it's a vibe-coding event. Both technical and non-technical tasks count toward evaluation.
+**Format.** Three rounds, and every team plays all three — there are no eliminations. Each round has a Technical Task and a Fun Task that earn advantage points. AI tools are fully allowed — it's a vibe-coding event.
 
 **Judging.** Relevance to the problem statement, feasibility, use of the provided dataset, UX and solution design, and performance in the Technical Tasks round. Strong performance in non-technical tasks gives a bonus going into the next round.
 

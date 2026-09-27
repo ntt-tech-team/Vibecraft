@@ -57,21 +57,33 @@ export default function RoundPage() {
 
           {round === 1 && (
             <>
-              <h1>Round 1 — The Elimination</h1>
+              <h1>Round 1 — The Overworld</h1>
               <p>
-                You'll get a problem statement and a fixed window to submit a working technical
+                Every team gets a problem statement and a fixed window to submit a working technical
                 solution. This round tests raw problem-solving — how fast and how well you can build
                 under pressure.
               </p>
               <p>
-                Non-technical tasks are optional here, but finishing them banks you bonus points that
-                carry into Round 2.
+                Every team plays every round. The Technical Task and the Fun Task earn your team
+                advantage points along the way.
               </p>
               <p className="hint">
                 The exact problem statement drops on the morning of the event — this page covers the
                 rules, not the puzzle.
               </p>
               <FormCta url={ROUND1_SUBMIT_URL} label="Submit Round 1" />
+              <div className="round-phase">
+                <p className="round-eyebrow" style={{ color: 'var(--grass-light)', margin: '0 0 10px' }}>
+                  TECHNICAL TASK · THE TRIAL
+                </p>
+                <p>
+                  Three quick games: clear all three as a team before the timer runs out to earn 1
+                  advantage point.
+                </p>
+                <Link to="/round/1/task" className="btn round-cta" style={{ marginTop: 0 }}>
+                  Play The Trial →
+                </Link>
+              </div>
             </>
           )}
 
@@ -79,8 +91,8 @@ export default function RoundPage() {
             <>
               <h1>Round 2 — Level Up</h1>
               <p>
-                Shortlisted teams get the advanced problem statements and move through multiple build
-                stages, with extra points on the Technical Tasks — and a few surprises built in.
+                Every team gets the advanced problem statements and moves through multiple build
+                stages, with advantage points on the Technical Tasks — and a few surprises built in.
               </p>
               <Round2Gate submitUrl={ROUND2_SUBMIT_URL} />
               <div className="round-phase">

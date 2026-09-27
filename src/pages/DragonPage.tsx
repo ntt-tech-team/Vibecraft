@@ -205,7 +205,9 @@ function TeamGate({ onJoined }: { onJoined: (key: string) => void }) {
           ? 'Use 2–40 characters, including at least two letters or numbers.'
           : err === 'team_limit'
             ? 'Team setup is full. Ask an organiser.'
-            : UNREACHABLE,
+            : err === 'registration_closed'
+              ? 'Team registration is closed. Join with the team key your team got in Round 1, or ask an organiser.'
+              : UNREACHABLE,
     )
   }
 
@@ -263,7 +265,9 @@ function TeamGate({ onJoined }: { onJoined: (key: string) => void }) {
 
       <form className="dg-card" onSubmit={join}>
         <h2 className="dg-h2">Join your team</h2>
-        <p className="dg-muted">Enter the team key shown on your teammate's screen.</p>
+        <p className="dg-muted">
+          Registered in Round 1? Use the same team key. It's also on your teammate's screen.
+        </p>
         <label htmlFor="dg-join-key" className="dg-label">
           Team key
         </label>

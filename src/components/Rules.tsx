@@ -2,7 +2,7 @@ const FORMAT_TILES = [
   { glyph: '🏫', text: 'Fully offline. All rounds run in person on the 4th floor.' },
   { glyph: '🤖', text: "AI tools are fair game — it's a vibe-coding event. Use what makes you faster." },
   { glyph: '🤝', text: 'Play fair and follow event-day instructions so rounds run on schedule.' },
-  { glyph: '⏱️', text: "Submit within the window you're given. Late work risks elimination." },
+  { glyph: '⏱️', text: "Submit within the window you're given. Late work may not count." },
 ]
 
 export default function Rules() {
