@@ -147,7 +147,8 @@ export default function DragonPage() {
           <h1 className="dg-title">The Ender Dragon</h1>
           <p className="dg-lead">
             Four dragons each guard a password. Talk them into revealing it, then enter it to beat the
-            level. Every team gets its own passwords, so sharing answers won't help anyone.
+            level. Every team gets its own passwords, so sharing answers won't help anyone.{' '}
+            <strong>Beat all four dragons to earn your team 1 advantage point.</strong>
           </p>
 
           {notice && (
@@ -419,7 +420,15 @@ function Game({
     })
     setPending(false)
     if (res.ok && res.correct) {
-      add(selected, { from: 'system', tone: 'ok', text: `🏆 Level ${selected} cleared! +${res.points ?? 1} advantage point${res.points === 1 ? '' : 's'}.` })
+      // All-or-nothing: only the last level carries the point (dragon_levels.points)
+      const isLast = selected === Math.max(...levels.map((l) => l.level))
+      add(selected, {
+        from: 'system',
+        tone: 'ok',
+        text: isLast
+          ? `🏆 You beat all ${levels.length} dragons! +${res.points || 1} advantage point for your team.`
+          : `🏆 Level ${selected} cleared! Keep going: beat all ${levels.length} dragons to earn 1 advantage point.`,
+      })
       setGuess('')
       await refresh()
       return
@@ -486,7 +495,7 @@ function Game({
                 🐉👑
               </p>
               <h2 className="dg-h2">You outwitted all the dragons!</h2>
-              <p>Your team has cleared every level. Well played.</p>
+              <p>Your team has cleared every level and earned 1 advantage point. Well played.</p>
             </div>
           ) : info ? (
             <>

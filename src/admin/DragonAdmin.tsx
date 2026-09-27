@@ -112,6 +112,8 @@ export default function DragonAdmin() {
   }
 
   const cfg = data.config
+  // All-or-nothing scoring: a team earns its 1 advantage point by clearing the last level
+  const finalLevel = Math.max(0, ...data.levels.map((l) => l.level))
   const q = filter.trim().toLowerCase()
   const teams = q ? data.teams.filter((t) => t.name.toLowerCase().includes(q)) : data.teams
 
@@ -159,6 +161,10 @@ export default function DragonAdmin() {
       </p>
 
       <h3 style={h3}>Levels cleared</h3>
+      <p style={{ fontSize: 14, color: '#CFC6A9', margin: '0 0 8px' }}>
+        🏆 Teams that earned the point (beat all {data.levels.length} dragons):{' '}
+        <strong style={{ color: '#6FA043' }}>{data.teams.filter((t) => t.cleared.includes(finalLevel)).length}</strong>
+      </p>
       <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
         {data.levels.map((l) => (
           <span key={l.level} style={chip}>
@@ -232,7 +238,8 @@ export default function DragonAdmin() {
             <div style={{ flex: 1, minWidth: 0 }}>
               <div style={{ fontWeight: 700, overflowWrap: 'anywhere' }}>{t.name}</div>
               <div style={{ fontSize: 12, color: '#CFC6A9' }}>
-                Levels: {t.cleared.length ? t.cleared.join(', ') : 'none'} · {t.msgs} messages
+                {t.cleared.includes(finalLevel) ? '✅ 1 point · ' : ''}Levels: {t.cleared.length}/{data.levels.length} ·{' '}
+                {t.msgs} messages
               </div>
             </div>
             <Btn tone="ghost" onClick={() => void newKey(t)}>

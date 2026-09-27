@@ -95,8 +95,9 @@ After a few seconds it prints an address like `https://some-random-words.tryclou
 4. **⏸ Pause** stops chatting and guessing instantly (e.g. for an announcement). **🐉 Open** resumes.
 5. When Phase 2 ends: **💤 Close**.
 
-**Scoring:** 1 advantage point per level (4 max). The `/admin` Teams list shows each team's
-cleared levels. Note them down after closing.
+**Scoring (all-or-nothing):** a team earns **1 advantage point** only by beating all 4 dragons.
+`/admin` shows "Teams that earned the point" and marks each finished team **✅ 1 point**.
+Note them down after closing.
 
 Also watch **AI engines** in `/admin`: messages per engine today and how much of Cloudflare's
 free budget is used. **💻 Laptop first** / **☁️ Cloudflare first** swap which engine answers first.
