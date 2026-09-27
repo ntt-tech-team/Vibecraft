@@ -2,6 +2,7 @@ import { Link, useParams } from 'react-router-dom'
 import WorldBackground, { type World } from '../components/WorldBackground'
 import Round2Gate from '../components/Round2Gate'
 import { REGISTER_FORM_URL, ROUND1_SUBMIT_URL, ROUND2_SUBMIT_URL, ROUND3_PPT_URL } from '../config'
+import NotFound from './NotFound'
 
 function FormCta({ url, label }: { url: string; label: string }) {
   if (!url || url === 'REPLACE_ME') {
@@ -20,6 +21,7 @@ function FormCta({ url, label }: { url: string; label: string }) {
 
 export default function RoundPage() {
   const { id } = useParams()
+  if (id !== '1' && id !== '2' && id !== '3') return <NotFound />
   const round = id === '2' ? 2 : id === '3' ? 3 : 1
   const world: World = round === 1 ? 'overworld' : round === 2 ? 'nether' : 'end'
   const eyebrowColor =

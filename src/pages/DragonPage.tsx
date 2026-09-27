@@ -103,11 +103,19 @@ export default function DragonPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  // While the dragon is closed or paused, check back every 20 s so the page wakes up by itself.
+  // While the dragon is closed or paused, check back every 30 s so the page wakes up by itself.
+  // Hidden tabs don't check at all; returning to the tab checks straight away.
   useEffect(() => {
     if (!state || state.status === 'open') return
-    const id = window.setInterval(() => void refresh(key), 20_000)
-    return () => window.clearInterval(id)
+    const check = () => {
+      if (!document.hidden) void refresh(key)
+    }
+    const id = window.setInterval(check, 30_000)
+    document.addEventListener('visibilitychange', check)
+    return () => {
+      window.clearInterval(id)
+      document.removeEventListener('visibilitychange', check)
+    }
   }, [state, key, refresh])
 
   function joined(newKey: string) {

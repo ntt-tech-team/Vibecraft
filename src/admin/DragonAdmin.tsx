@@ -69,7 +69,10 @@ export default function DragonAdmin() {
 
   useEffect(() => {
     void load()
-    const id = window.setInterval(() => void load(), 10_000)
+    // refresh every 10 s, but not while the admin tab is in the background
+    const id = window.setInterval(() => {
+      if (!document.hidden) void load()
+    }, 10_000)
     return () => window.clearInterval(id)
   }, [load])
 

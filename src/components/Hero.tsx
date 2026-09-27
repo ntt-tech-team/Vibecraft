@@ -1,9 +1,10 @@
-import { lazy, Suspense } from 'react'
+import { Suspense } from 'react'
 import { motion } from 'framer-motion'
 import { useTimer } from '../hooks/useTimer'
 import { REGISTER_FORM_URL } from '../config'
+import { lazyPage } from '../lib/lazyPage'
 
-const VoxelDiorama = lazy(() => import('./VoxelDiorama'))
+const VoxelDiorama = lazyPage(() => import('./VoxelDiorama'))
 
 const rise = {
   hidden: { opacity: 0, y: 14 },

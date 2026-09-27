@@ -1,12 +1,14 @@
-import React, { lazy, Suspense } from 'react'
+import React, { Suspense } from 'react'
 import ReactDOM from 'react-dom/client'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import App from './App'
 import AdminPanel from './admin/AdminPanel'
+import { lazyPage } from './lib/lazyPage'
 import './index.css'
 
-const RoundPage = lazy(() => import('./pages/RoundPage'))
-const DragonPage = lazy(() => import('./pages/DragonPage'))
+const RoundPage = lazyPage(() => import('./pages/RoundPage'))
+const DragonPage = lazyPage(() => import('./pages/DragonPage'))
+const NotFound = lazyPage(() => import('./pages/NotFound'))
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
@@ -27,6 +29,14 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
           element={
             <Suspense fallback={null}>
               <DragonPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="*"
+          element={
+            <Suspense fallback={null}>
+              <NotFound />
             </Suspense>
           }
         />
