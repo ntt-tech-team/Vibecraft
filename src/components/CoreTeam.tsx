@@ -17,20 +17,25 @@ type Member = { name: string; photo?: string }
 type Role = { role: string; members: Member[] }
 
 const TEAM: Role[] = [
-  { role: 'President', members: [{ name: 'Naren', photo: 'naren' }] },
+  { role: 'President', members: [{ name: 'Naren Karthik R', photo: 'naren' }] },
   { role: 'Vice President', members: [{ name: 'R S Hareecharan', photo: 'hareecharan' }] },
-  { role: 'Secretary', members: [{ name: 'Mashiga Shree', photo: 'mashiga' }] },
-  { role: 'Treasurer', members: [{ name: 'Rashmitha', photo: 'rashmitha' }] },
-  { role: 'Tech Lead', members: [{ name: 'Kishore', photo: 'kishore' }] },
-  { role: 'Social Media Lead', members: [{ name: 'Vishesh', photo: 'vishesh' }] },
-  // not photographed yet
-  { role: 'Design Leads', members: [{ name: 'Darshan' }, { name: 'Harshini' }] },
+  { role: 'Secretary', members: [{ name: 'Mashiga Shri', photo: 'mashiga' }] },
+  { role: 'Treasurer', members: [{ name: 'Rasmitha B', photo: 'rashmitha' }] },
+  { role: 'Tech Lead', members: [{ name: 'Kishor A', photo: 'kishore' }] },
+  { role: 'Social Media Lead', members: [{ name: 'Vishesh U', photo: 'vishesh' }] },
+  {
+    role: 'Design Leads',
+    members: [
+      { name: 'Dharshan M R', photo: 'dharshan' },
+      { name: 'Harshini Ritikka M K', photo: 'harshini' },
+    ],
+  },
   {
     role: 'Event Coordinators',
     members: [
-      { name: 'Shree', photo: 'shree' },
-      { name: 'Siva Balan', photo: 'siva-balan' },
-      { name: 'Somesh', photo: 'somesh' },
+      { name: 'Shrikalyan K', photo: 'shree' },
+      { name: 'Siva Balan S', photo: 'siva-balan' },
+      { name: 'Someshwar J', photo: 'somesh' },
     ],
   },
 ]

@@ -287,6 +287,11 @@ header.site{
   color:#fff; text-shadow:1px 1px 0 #3F3F3F;
   background:rgba(255,255,255,0.12);
 }
+/* group slides: slightly smaller tags so full names (e.g. "Harshini Ritikka M K") stay on one line without
+   running into the neighbour's tag on phones */
+.ct-slide[data-count="2"] .ct-nametag,
+.ct-slide[data-count="3"] .ct-nametag{font-size:clamp(6px,1.9cqw,10px);}
+.ct-slide[data-count="3"] .ct-nametag{padding:5px 4px;}
 .ct-photo{
   position:relative; width:100%; aspect-ratio:3/4; overflow:hidden;
   background:#15172A;
