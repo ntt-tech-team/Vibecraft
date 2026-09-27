@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 /**
  * Intro: the event poster STRETCH-FILLED to cover the whole viewport (edge to edge, the full
@@ -7,6 +7,7 @@ import { useEffect, useRef } from 'react'
  *
  * At rest the poster is painted with ONE drawImage call (no internal tile boundaries), so there
  * are ZERO seams. The tile grid only appears once the dissolve is actually in progress.
+ * A small "Scroll / Swipe up to continue" hint sits on the resting poster and fades out as the scroll begins.
  * Skipped entirely for reduced-motion users.
  */
 
@@ -18,18 +19,23 @@ export default function BannerIntro() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const backdropRef = useRef<HTMLDivElement>(null)
   const spacerRef = useRef<HTMLDivElement>(null)
+  const hintRef = useRef<HTMLDivElement>(null)
+  // phones/tablets get "swipe up", mouse users get "scroll"
+  const [touch] = useState(() => window.matchMedia('(pointer: coarse)').matches)
 
   useEffect(() => {
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     const canvas = canvasRef.current
     const backdrop = backdropRef.current
     const spacer = spacerRef.current
-    if (!canvas || !backdrop || !spacer) return
+    const hint = hintRef.current
+    if (!canvas || !backdrop || !spacer || !hint) return
 
     if (reduce) {
       canvas.style.display = 'none'
       backdrop.style.display = 'none'
       spacer.style.display = 'none'
+      hint.style.display = 'none'
       return
     }
 
@@ -75,10 +81,16 @@ export default function BannerIntro() {
     const SPAN = 0.22
 
     function draw() {
+      const progress = Math.max(0, Math.min(1, window.scrollY / introHeight))
+
+      // the "scroll to continue" hint is only for the poster at rest — gone within the first ~15% of the scroll
+      const hintAlpha = Math.max(0, 1 - progress * 6)
+      hint!.style.opacity = String(hintAlpha)
+      hint!.style.visibility = hintAlpha > 0.02 ? 'visible' : 'hidden'
+
       if (!imgReady) return
       const cw = window.innerWidth
       const ch = window.innerHeight
-      const progress = Math.max(0, Math.min(1, window.scrollY / introHeight))
 
       if (progress >= 1) {
         canvas!.style.display = 'none'
@@ -182,6 +194,23 @@ export default function BannerIntro() {
         aria-hidden="true"
         style={{ position: 'fixed', inset: 0, zIndex: 100, pointerEvents: 'none' }}
       />
+      {/* lock-screen style nudge for visitors who don't realise the poster scrolls away */}
+      <div ref={hintRef} className="intro-hint-wrap">
+        <button
+          type="button"
+          className={touch ? 'intro-hint is-touch' : 'intro-hint'}
+          onClick={() => window.scrollTo({ top: window.innerHeight, behavior: 'smooth' })}
+        >
+          <svg className="intro-hint-icon" viewBox="0 0 9 5" width="18" height="10" aria-hidden="true" shapeRendering="crispEdges">
+            <path
+              fill="currentColor"
+              transform={touch ? 'matrix(1 0 0 -1 0 5)' : undefined}
+              d="M0 0h2v1H0zM7 0h2v1H7zM1 1h2v1H1zM6 1h2v1H6zM2 2h2v1H2zM5 2h2v1H5zM3 3h3v1H3zM4 4h1v1H4z"
+            />
+          </svg>
+          <span className="intro-hint-text">{touch ? 'Swipe up to continue' : 'Scroll to continue'}</span>
+        </button>
+      </div>
       <div ref={spacerRef} aria-hidden="true" style={{ height: '100vh' }} />
     </>
   )
